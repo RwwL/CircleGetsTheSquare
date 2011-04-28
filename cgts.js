@@ -1,13 +1,13 @@
 // namespace
-var artGen = artGen || {};
+var cgts = cgts || {};
 
 (function($) {
 
-	artGen.resizeTimeout = null;
-	artGen.resizeThrottle = 250;
-	artGen.defaultOptions = {
+	cgts.resizeTimeout = null;
+	cgts.resizeThrottle = 250;
+	cgts.defaultOptions = {
 		regenOnWinResize	: true,
-		canvasClassName	: 'artGenCanvas',
+		canvasClassName	: 'cgtsCanvas',
 		bgColor			: 'white',
 		minRadius		: 30,
 		maxRadius		: 48,
@@ -24,7 +24,7 @@ var artGen = artGen || {};
 		spacing			: 80,
 		jitter			: 8
 	};
-	artGen.randomColor = function(rMin, rMax, gMin, gMax, bMin, bMax, aMin, aMax) {
+	cgts.randomColor = function(rMin, rMax, gMin, gMax, bMin, bMax, aMin, aMax) {
 		return 'rgba(' +
 			(Math.floor(Math.random()*rMax) + rMin) +
 			',' +
@@ -35,34 +35,34 @@ var artGen = artGen || {};
 			Math.floor(Math.random() * ((aMax*10) - (aMin*10)) + (aMin * 10)) / 10 +
 			')';
 	};
-	artGen.randomAngle = function() {
+	cgts.randomAngle = function() {
 		return Math.floor(Math.random()*360);
 	};
-	artGen.randomRadius = function(minRadius, maxRadius){
+	cgts.randomRadius = function(minRadius, maxRadius){
 		return (Math.floor(Math.random()*minRadius) + maxRadius);
 	},
-	artGen.jitterPoint =	function(point, jitter){
-		var jittered = point + artGen.posNeg(Math.ceil(Math.random()* jitter)-1);
+	cgts.jitterPoint =	function(point, jitter){
+		var jittered = point + cgts.posNeg(Math.ceil(Math.random()* jitter)-1);
 		return jittered;
 	}
-	artGen.posNeg = function(num) {
+	cgts.posNeg = function(num) {
 		if (num == undefined) num = 1;
 		var gen = (Math.floor(Math.random()*5)) + 1;
 		return ((gen % 2 == 0) ? 1 : -1) * num;
 	},
-	artGen.drawCircle = function(ctx, jx, jy, r){
+	cgts.drawCircle = function(ctx, jx, jy, r){
 		ctx.beginPath();
 		ctx.arc(jx, jy, r, 0, 2*Math.PI, true)
 		ctx.closePath();
 		ctx.fill();
 	},
-	artGen.drawRectangle = function(ctx, jx, jy, o) {
+	cgts.drawRectangle = function(ctx, jx, jy, o) {
 		var
 			rectWidth = Math.floor(Math.random() * (o.maxRectSide - o.minRectSide)) + o.minRectSide,
 			rectHeight = Math.floor(Math.random() * (o.maxRectSide - o.minRectSide)) + o.minRectSide,
 			offsetX = -rectWidth/2,
 			offsetY = -rectHeight/2,
-			rotationInDegrees = artGen.randomAngle();
+			rotationInDegrees = cgts.randomAngle();
 			
 			ctx.translate(jx + rectWidth/2, jy + rectHeight/2);
 			ctx.rotate(Math.PI/180 * rotationInDegrees);
@@ -71,11 +71,11 @@ var artGen = artGen || {};
 					
 	}
 
-	artGen.generate = function($elem, options) {
+	cgts.generate = function($elem, options) {
 		var hasCanvas = !!document.createElement('canvas').getContext;
 		if(!hasCanvas) return;
 		var
-			o 				= $.extend({}, artGen.defaultOptions, options),
+			o 				= $.extend({}, cgts.defaultOptions, options),
 			c,
 			ctx,
 			resizeTimeout,
@@ -83,7 +83,7 @@ var artGen = artGen || {};
 			width			= $elem.width(),
 			height			= $elem.height();
 		if (o.bgColor) $elem[0].style.backgroundColor = o.bgColor;
-		// test if an artGen canvas is there and reuse if it is
+		// test if an cgts canvas is there and reuse if it is
 		var $firstChild = $elem.children(':eq(0)');
 		var prevCanvas = $firstChild.is('canvas.'+o.canvasClassName);
 		if ( prevCanvas ) {
@@ -102,34 +102,34 @@ var artGen = artGen || {};
 		for (var y = 0; y < height; y = y + o.spacing) {
 			for (var x = 0; x < width; x = x + o.spacing ) {
 				ctx.save();
-				ctx.fillStyle = artGen.randomColor(o.rMin, o.rMax, o.gMin, o.gMax, o.bMin, o.bMax, o.aMin, o.aMax);
-				var jx = artGen.jitterPoint(x, o.jitter);
-				var jy = artGen.jitterPoint(y, o.jitter);
-				var rand = artGen.posNeg();
+				ctx.fillStyle = cgts.randomColor(o.rMin, o.rMax, o.gMin, o.gMax, o.bMin, o.bMax, o.aMin, o.aMax);
+				var jx = cgts.jitterPoint(x, o.jitter);
+				var jy = cgts.jitterPoint(y, o.jitter);
+				var rand = cgts.posNeg();
 				if (rand > 0) {
-					artGen.drawCircle(ctx, jx, jy, artGen.randomRadius(o.minRadius, o.maxRadius));
+					cgts.drawCircle(ctx, jx, jy, cgts.randomRadius(o.minRadius, o.maxRadius));
 				}
 				else {
-					artGen.drawRectangle(ctx, jx, jy, o);
+					cgts.drawRectangle(ctx, jx, jy, o);
 				}
 				ctx.restore();
 			}
 		}
 		if(o.regenOnWinResize)
 		{
-			$(window).bind('resize.artGen', function(){
-				clearTimeout(artGen.resizeTimeout);
-				artGen.resizeTimeout = setTimeout( function() {
-					artGen.generate($elem, o);
+			$(window).bind('resize.cgts', function(){
+				clearTimeout(cgts.resizeTimeout);
+				cgts.resizeTimeout = setTimeout( function() {
+					cgts.generate($elem, o);
 				}, 250);
 			});
 		}
 	};
 	
 	// turn into jQuery plugin
-	jQuery.fn.artGen = function (options) {
+	jQuery.fn.cgts = function (options) {
 		return this.each(function () {
-			new artGen.generate($(this), options);
+			new cgts.generate($(this), options);
 		});
 	};
 
