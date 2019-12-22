@@ -1,7 +1,7 @@
 // namespace
 var cgts = cgts || {};
 
-(function($) {
+(function() {
 
 	cgts.resizeTimeout = null;
 	cgts.resizeThrottle = 250;
@@ -71,28 +71,28 @@ var cgts = cgts || {};
 					
 	}
 
-	cgts.generate = function($elem, options) {
+	cgts.generate = function(elem, options) {
 		var hasCanvas = !!document.createElement('canvas').getContext;
 		if(!hasCanvas) return;
 		var
-			o 				= $.extend({}, cgts.defaultOptions, options),
+			o = Object.assign({}, cgts.defaultOptions, options),
 			c,
 			ctx,
 			resizeTimeout,
-			resizeThrottle 	= o.resizeThrottle,
-			width			= $elem.width(),
-			height			= $elem.height();
-		if (o.bgColor) $elem[0].style.backgroundColor = o.bgColor;
+			resizeThrottle = o.resizeThrottle,
+			width	= elem.offsetWidth,
+			height = elem.offsetHeight;
+		if (o.bgColor) elem.style.backgroundColor = o.bgColor;
 		// test if an cgts canvas is there and reuse if it is
-		var $firstChild = $elem.children(':eq(0)');
-		var prevCanvas = $firstChild.is('canvas.'+o.canvasClassName);
-		if ( prevCanvas ) {
-				c	= $firstChild[0];
+		var firstChild = elem.firstChild
+		var hasPrevCanvas = firstChild && firstChild.nodeName.toLowerCase() === 'canvas' && firstChild.classList.contains(o.canvasClassName);
+		if ( hasPrevCanvas ) {
+				c	= firstChild;
 		}						
 		else {
-			var 
-				c	= document.createElement('canvas'),
-				$c	= $(c).addClass(o.canvasClassName).prependTo($elem);		
+			var c	= document.createElement('canvas');
+			c.classList.add(o.canvasClassName);
+			elem.prepend(c);		
 		}
 	
 		var ctx = c.getContext('2d');			
@@ -115,22 +115,15 @@ var cgts = cgts || {};
 				ctx.restore();
 			}
 		}
-		if(o.regenOnWinResize)
-		{
-			$(window).bind('resize.cgts', function(){
+		if(o.regenOnWinResize) {
+			window.addEventListener('resize', function(){
 				clearTimeout(cgts.resizeTimeout);
 				cgts.resizeTimeout = setTimeout( function() {
-					cgts.generate($elem, o);
+					cgts.generate(elem, o);
 				}, 250);
 			});
 		}
 	};
 	
-	// turn into jQuery plugin
-	jQuery.fn.cgts = function (options) {
-		return this.each(function () {
-			new cgts.generate($(this), options);
-		});
-	};
 
-})(jQuery);
+})(window);

@@ -1,64 +1,63 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>CircleGetsTheSquare</title>
-		<link href="style.css" type="text/css" rel="stylesheet">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript"></script>
-		<script src="cgts.js" type="text/javascript"></script>
-		<script type="text/javascript">
-			$(document).ready(function(){
-				var cgts = $('#outerContainer').cgts();
-			});
-		</script>
-	</head>
-	<body>
-		<div id="outerContainer">
-			<div id="container">
-				<h1>CircleGetsTheSquare, A Simple Background Art Generator</h1>
-				<p>Takes an element, creates and prepends an HTML5 canvas element (if supported), and draws a series of randomized circles and rotated rectangles on the canvas based on the following default options, or your custom options:</p>
-				<code><pre>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CircleGetsTheSquare</title>
+    <link href="style.css" type="text/css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="outerContainer">
+      <div id="container">
+        <h1>CircleGetsTheSquare, A Simple Background Art Generator</h1>
+        <p>Takes an element, creates and prepends an HTML5 canvas element (if supported), and draws a series of randomized circles and rotated rectangles on the canvas. Usage:</p>
+        <code><pre>cgts.generate(elem);</pre></code>
+        <p>Default options are as follows, but you can pass your custom options object in as the 2nd argument:</p>
+        <code><pre>
 cgts.defaultOptions = {
 
-	regenOnWinResize	: true,
-	canvasClassName		: 'cgtsCanvas',
-	
-	// if set, overrides CSS color on element
-	// (set CSS value for non-canvas browsers)
-	bgColor			: 'white',
+  regenOnWinResize: true,
+  canvasClassName: 'cgtsCanvas',
+  
+  // if set, overrides CSS color on element
+  // (set CSS value for non-canvas browsers)
+  bgColor: 'white',
 
-	// randomized circle radii
-	minRadius		: 30,
-	maxRadius		: 48,
+  // randomized circle radii
+  minRadius: 30,
+  maxRadius: 48,
 
-	// randomized dimensions
-	minRectSide		: 60,
-	maxRectSide		: 150,
+  // randomized dimensions
+  minRectSide: 60,
+  maxRectSide: 150,
 
-	// randomized color values
-	// (generates rgba)
-	rMin			: 0,
-	rMax			: 255,
-	gMin			: 0,
-	gMax			: 255,
-	bMin			: 0,
-	bMax			: 255,
-	aMin			: 0.2,
-	aMax			: 1,
+  // randomized color values
+  // (generates rgba)
+  rMin: 0,
+  rMax: 255,
+  gMin: 0,
+  gMax: 255,
+  bMin: 0,
+  bMax: 255,
+  aMin: 0.2,
+  aMax: 1,
 
-	// x/y spacing for center points
-	spacing			: 80,
+  // x/y spacing for center points
+  spacing: 80,
 
-	// randomized +/- variance of center points
-	// to avoid appearance of a rigid grid
-	jitter			: 8,
+  // randomized +/- variance of center points
+  // to avoid appearance of a rigid grid
+  jitter: 8,
 };
-				</pre></code>
-				<p>Presently requires jQuery for some convenience with DOM manipulation and dimension-getting, so I wrapped it up as a plugin as well, but it could also just be called with cgts.generate(element, options).</p>
-				<p>Typically takes between 35-75ms to run.</p>
-				<p>Will regenerate on window.resize unless you set the relevant option to false.</p>
-				<p><a href="https://github.com/RwwL/CircleGetsTheSquare">On github</a> if you want to modify or contribute.</p>
-			</div>
-		</div>		
-	</body>
+        </pre></code>
+        <p>Typically takes between 35-75ms on a 1920x1200 browser window.</p>
+        <p>Will regenerate on window.resize unless you set the relevant option to false.</p>
+        <p><a href="https://github.com/RwwL/CircleGetsTheSquare">On github</a> if you want to modify or contribute.</p>
+        <script src="cgts.js"></script>
+        <script type="text/javascript">
+          cgts.generate(document.querySelector('#outerContainer'));
+        </script>
+      </div>
+    </div>    
+  </body>
 </html>
