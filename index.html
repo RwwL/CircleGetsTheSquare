@@ -12,7 +12,7 @@
         <h1>CircleGetsTheSquare, A Simple Background Art Generator</h1>
         <p>Takes an element, creates and prepends an HTML5 canvas element (if supported), and draws a series of randomized circles and rotated rectangles on the canvas. Usage:</p>
         <code><pre>var cgts = new CircleGetsTheSquare(elem, options);</pre></code>
-        <p>Default options are as follows, but you can pass your custom options object in as the 2nd argument:</p>
+        <p>Default options are outlined below, but you can pass your custom options object in as the 2nd argument to the constructor. You can also call <code>setOptions</code> on your instance to change any of the options (passing in only the keys you want to change), with an optional boolean 2nd argument to regenerate the background immediately. (This won't change the <code>className</code> on the canvas or the resize behavior, though—it's mainly to vary the appearance for dynamic setups.)</p>
         <code><pre>
 canvasClassName: 'cgtsCanvas'
 
