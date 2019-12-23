@@ -15,13 +15,8 @@ function CircleGetsTheSquare(elem, options) {
     this.elem.prepend(this.canvas);
     this.generate();
     if(this.options.regenOnWinResize) {
-      var self = this;
-      window.addEventListener('resize', function(){
-        clearTimeout(self.resizeTimeout);
-        self.resizeTimeout = setTimeout( function() {
-          self.generate();
-        }, self.options.resizeThrottle);
-      });
+      this.boundHandleResize = this.handleResize.bind(this);
+      window.addEventListener('resize', this.boundHandleResize);
     }
   } else {
     return new Error('CircleGetsTheSquare: invalid target element');
@@ -82,6 +77,28 @@ CircleGetsTheSquare.prototype.generate = function() {
       ctx.restore();
     }
   }
+};
+
+CircleGetsTheSquare.prototype.handleResize = function() {
+  var self = this;
+  clearTimeout(this.resizeTimeout);
+  self.resizeTimeout = setTimeout( function() {
+    self.generate();
+  }, this.options.resizeThrottle);
+};
+
+CircleGetsTheSquare.prototype.destroy = function() {
+  if (this.options.regenOnWinResize) {
+    window.removeEventListener('resize', this.boundHandleResize);
+    this.boundHandleResize = null;
+  }
+  this.canvas.parentElement.removeChild(this.canvas);
+  clearTimeout(this.resizeTimeout);
+  this.resizeTimeout = null;
+  this.context = null;
+  this.canvas = null;
+  this.options = null;
+  this.elem = null;
 };
 
 /*
