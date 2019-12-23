@@ -1,10 +1,12 @@
+/* global window, document, HTMLElement, setTimeout, clearTimeout */
+
 function CircleGetsTheSquare(elem, options) {
   var hasCanvas = !!document.createElement('canvas').getContext;
   if (!hasCanvas) {
     return new Error('CircleGetsTheSquare: requires the canvas element');
   }
   if (elem instanceof HTMLElement) {
-  	this.elem = elem;
+    this.elem = elem;
     this.resizeTimeout = null;
     this.setOptions(options);
     this.canvas = document.createElement('canvas');
@@ -18,13 +20,13 @@ function CircleGetsTheSquare(elem, options) {
         clearTimeout(self.resizeTimeout);
         self.resizeTimeout = setTimeout( function() {
           self.generate();
-        }, 200);
+        }, self.options.resizeThrottle);
       });
     }
   } else {
     return new Error('CircleGetsTheSquare: invalid target element');
   }
-};
+}
 
 CircleGetsTheSquare.prototype.setOptions = function(options, regenerate) {
   this.options = Object.assign({}, CircleGetsTheSquare.defaultOptions, this.options, options);
@@ -42,18 +44,16 @@ CircleGetsTheSquare.prototype.drawCircle = function(jx, jy, r){
 };
 
 CircleGetsTheSquare.prototype.drawRectangle = function(jx, jy, o) {
-    var ctx = this.context;
-    var rectWidth = Math.floor(Math.random() * (o.maxRectSide - o.minRectSide)) + o.minRectSide;
-    var rectHeight = Math.floor(Math.random() * (o.maxRectSide - o.minRectSide)) + o.minRectSide;
-    var offsetX = -rectWidth/2;
-    var offsetY = -rectHeight/2;
-    var rotationInDegrees = CircleGetsTheSquare.randomAngle();
-    
-    ctx.translate(jx + rectWidth/2, jy + rectHeight/2);
-    ctx.rotate(Math.PI/180 * rotationInDegrees);
-    ctx.translate(offsetX, offsetY);   
-    ctx.fillRect(0, 0, rectWidth, rectHeight);
-        
+  var ctx = this.context;
+  var rectWidth = CircleGetsTheSquare.constrainedRandomInteger(o.minRectSide, o.maxRectSide);
+  var rectHeight = CircleGetsTheSquare.constrainedRandomInteger(o.minRectSide, o.maxRectSide);
+  var offsetX = -rectWidth/2;
+  var offsetY = -rectHeight/2;
+  var rotationInDegrees = CircleGetsTheSquare.randomAngle();
+  ctx.translate(jx + rectWidth/2, jy + rectHeight/2);
+  ctx.rotate(Math.PI/180 * rotationInDegrees);
+  ctx.translate(offsetX, offsetY);   
+  ctx.fillRect(0, 0, rectWidth, rectHeight);   
 };
 
 CircleGetsTheSquare.prototype.generate = function() {
@@ -63,7 +63,6 @@ CircleGetsTheSquare.prototype.generate = function() {
   var elem = this.elem;
   var width = elem.offsetWidth;
   var height = elem.offsetHeight;
-  if (o.bgColor) elem.style.backgroundColor = o.bgColor;
   c.width = width;
   c.height = height;
   ctx.clearRect(0, 0, width, height); 
@@ -75,7 +74,7 @@ CircleGetsTheSquare.prototype.generate = function() {
       var jy = CircleGetsTheSquare.jitterPoint(y, o.jitter);
       var rand = CircleGetsTheSquare.posNeg();
       if (rand > 0) {
-        this.drawCircle(jx, jy, CircleGetsTheSquare.randomRadius(o.minRadius, o.maxRadius));
+        this.drawCircle(jx, jy, CircleGetsTheSquare.constrainedRandomInteger(o.minRadius, o.maxRadius));
       }
       else {
         this.drawRectangle(jx, jy, o);
@@ -83,7 +82,6 @@ CircleGetsTheSquare.prototype.generate = function() {
       ctx.restore();
     }
   }
-
 };
 
 /*
@@ -92,54 +90,55 @@ CircleGetsTheSquare.prototype.generate = function() {
  *
  */
 CircleGetsTheSquare.randomColor = function(rMin, rMax, gMin, gMax, bMin, bMax, aMin, aMax) {
-	return 'rgba(' +
-		(Math.floor(Math.random()*rMax) + rMin) +
-		',' +
-		(Math.floor(Math.random()*gMax) + gMin) + 
-		',' + 
-		(Math.floor(Math.random()*bMax) + bMin) + 
-		',' + 
-		Math.floor(Math.random() * ((aMax*10) - (aMin*10)) + (aMin * 10)) / 10 +
-		')';
+  return 'rgba(' +
+    CircleGetsTheSquare.constrainedRandomInteger(rMin, rMax) +
+    ',' +
+    CircleGetsTheSquare.constrainedRandomInteger(gMin, gMax) + 
+    ',' + 
+    CircleGetsTheSquare.constrainedRandomInteger(bMin, bMax) + 
+    ',' + 
+    (CircleGetsTheSquare.constrainedRandomInteger(aMin * 10, aMax * 10) / 10) +
+    ')';
 };
 
 CircleGetsTheSquare.randomAngle = function() {
-	return Math.floor(Math.random()*360);
+  return Math.floor(Math.random()*360);
 };
 
-CircleGetsTheSquare.randomRadius = function(minRadius, maxRadius){
-	return (Math.floor(Math.random()*minRadius) + maxRadius);
+CircleGetsTheSquare.constrainedRandomInteger = function(min, max){
+  var num = Math.floor(Math.random() * (max - min + 1)) + min;
+  if (num >= min && num <= max ) return num;
 };
 
-CircleGetsTheSquare.jitterPoint =	function(point, jitter){
-	var jittered = point + CircleGetsTheSquare.posNeg(Math.ceil(Math.random()* jitter)-1);
-	return jittered;
+CircleGetsTheSquare.jitterPoint = function(point, jitter){
+  var jittered = point + CircleGetsTheSquare.posNeg(CircleGetsTheSquare.constrainedRandomInteger(0, jitter));
+  return jittered;
 };
 
 CircleGetsTheSquare.posNeg = function(num) {
-	if (num == undefined) num = 1;
-	var gen = (Math.floor(Math.random()*5)) + 1;
-	return ((gen % 2 == 0) ? 1 : -1) * num;
+  if (num == undefined) num = 1;
+  var gen = (Math.floor(Math.random()*5)) + 1;
+  return ((gen % 2 == 0) ? 1 : -1) * num;
 };
 
 CircleGetsTheSquare.defaultOptions = {
-  regenOnWinResize  : true,
   canvasClassName : 'cgtsCanvas',
-  bgColor     : 'white',
-  minRadius   : 30,
-  maxRadius   : 48,
-  minRectSide   : 60,
-  maxRectSide   : 150,
-  rMin      : 0,
-  rMax      : 255,
-  gMin      : 0,
-  gMax      : 255,
-  bMin      : 0,
-  bMax      : 255,
-  aMin      : 0.2,
-  aMax      : 0.8,
-  spacing     : 60,
-  jitter      : 8
+  minRadius: 20,
+  maxRadius: 60,
+  minRectSide: 40,
+  maxRectSide: 120,
+  rMin: 0,
+  rMax: 255,
+  gMin: 0,
+  gMax: 255,
+  bMin: 0,
+  bMax: 255,
+  aMin: 0.2,
+  aMax: 0.8,
+  spacing: 40,
+  jitter: 6,
+  regenOnWinResize : true,
+  resizeThrottle: 100,
 };
 
 window.CircleGetsTheSquare = CircleGetsTheSquare;

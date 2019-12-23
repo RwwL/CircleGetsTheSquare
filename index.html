@@ -14,20 +14,15 @@
         <code><pre>var cgts = new CircleGetsTheSquare(elem, options);</pre></code>
         <p>Default options are as follows, but you can pass your custom options object in as the 2nd argument:</p>
         <code><pre>
-regenOnWinResize: true,
-canvasClassName: 'cgtsCanvas',
-
-// if set, overrides CSS color on element
-// (set CSS value for non-canvas browsers)
-bgColor: 'white',
+canvasClassName: 'cgtsCanvas'
 
 // randomized circle radii
-minRadius: 30,
-maxRadius: 48,
+minRadius: 20,
+maxRadius: 60,
 
-// randomized dimensions
-minRectSide: 60,
-maxRectSide: 150,
+// randomized rect dimensions
+minRectSide: 40,
+maxRectSide: 120,
 
 // randomized color values
 // (generates rgba)
@@ -41,13 +36,16 @@ aMin: 0.2,
 aMax: 0.8,
 
 // x/y spacing for center points
-spacing: 60,
+spacing: 40,
 
 // randomized +/- variance of center points
 // to avoid appearance of a rigid grid
-jitter: 8
+jitter: 6
+
+// resize behavior
+regenOnWinResize: true,
+resizeThrottle: 100,  // milliseconds
         </pre></code>
-        <p>Typically takes between 35-75ms on a 1920x1200 browser window.</p>
         <p>Will regenerate on window.resize unless you set the relevant option to false.</p>
         <p><a href="https://github.com/RwwL/CircleGetsTheSquare">On github</a> if you want to modify or contribute.</p>
         <script src="./cgts.js"></script>
