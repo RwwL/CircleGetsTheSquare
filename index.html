@@ -11,51 +11,48 @@
       <div id="container">
         <h1>CircleGetsTheSquare, A Simple Background Art Generator</h1>
         <p>Takes an element, creates and prepends an HTML5 canvas element (if supported), and draws a series of randomized circles and rotated rectangles on the canvas. Usage:</p>
-        <code><pre>cgts.generate(elem);</pre></code>
+        <code><pre>var cgts = new CircleGetsTheSquare(elem, options);</pre></code>
         <p>Default options are as follows, but you can pass your custom options object in as the 2nd argument:</p>
         <code><pre>
-cgts.defaultOptions = {
+regenOnWinResize: true,
+canvasClassName: 'cgtsCanvas',
 
-  regenOnWinResize: true,
-  canvasClassName: 'cgtsCanvas',
-  
-  // if set, overrides CSS color on element
-  // (set CSS value for non-canvas browsers)
-  bgColor: 'white',
+// if set, overrides CSS color on element
+// (set CSS value for non-canvas browsers)
+bgColor: 'white',
 
-  // randomized circle radii
-  minRadius: 30,
-  maxRadius: 48,
+// randomized circle radii
+minRadius: 30,
+maxRadius: 48,
 
-  // randomized dimensions
-  minRectSide: 60,
-  maxRectSide: 150,
+// randomized dimensions
+minRectSide: 60,
+maxRectSide: 150,
 
-  // randomized color values
-  // (generates rgba)
-  rMin: 0,
-  rMax: 255,
-  gMin: 0,
-  gMax: 255,
-  bMin: 0,
-  bMax: 255,
-  aMin: 0.2,
-  aMax: 1,
+// randomized color values
+// (generates rgba)
+rMin: 0,
+rMax: 255,
+gMin: 0,
+gMax: 255,
+bMin: 0,
+bMax: 255,
+aMin: 0.2,
+aMax: 0.8,
 
-  // x/y spacing for center points
-  spacing: 80,
+// x/y spacing for center points
+spacing: 60,
 
-  // randomized +/- variance of center points
-  // to avoid appearance of a rigid grid
-  jitter: 8,
-};
+// randomized +/- variance of center points
+// to avoid appearance of a rigid grid
+jitter: 8
         </pre></code>
         <p>Typically takes between 35-75ms on a 1920x1200 browser window.</p>
         <p>Will regenerate on window.resize unless you set the relevant option to false.</p>
         <p><a href="https://github.com/RwwL/CircleGetsTheSquare">On github</a> if you want to modify or contribute.</p>
-        <script src="cgts.js"></script>
+        <script src="./cgts.js"></script>
         <script>
-          cgts.generate(document.querySelector('#outerContainer'));
+          var cgts = new CircleGetsTheSquare(document.querySelector('#outerContainer'));
         </script>
       </div>
     </div>    
